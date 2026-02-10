@@ -1,23 +1,101 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
 
 function App() {
+  const [search, setSearch] = useState("");
+
+  const [memes, setMemes] = useState([
+    { id: 1, name: "ehh matram hint iste chalu", url: "/memes/ehh matram hint iste chalu.jpeg" },
+    { id: 2, name: "Eda dorkina santha ra edhi", url: "/memes/edi ekadi santha.jpeg" },
+    { id: 3, name: "esesadu baga esesadu", url: "/memes/esesadu baga esesadu.jpeg" },
+    { id: 4, name: "edo tedda ga undi enti.?", url: "/memes/edho tedda ga undi.jpeg" },
+    { id: 5, name: "edichav le po avthalki", url: "/memes/edichav le po avthalki.jpeg" },
+    { id: 6, name: "orey apara", url: "/memes/orey apara.jpeg" },
+    { id: 7, name: "evey taginchukunte manchidi", url: "/memes/evey taginchukunte manchidi.jpeg" },
+    { id: 8, name: "abba sairam", url: "/memes/abba sairam.jpeg" },
+    { id: 9, name: "ushhh", url: "/memes/ushhh.jpeg" },
+    { id: 10, name: "delete chey bro", url: "/memes/delete chey bro.jpeg" },
+    { id: 11, name: "bp bp tepinchaku", url: "/memes/bp bp tepinchaku.jpeg" },
+    { id: 12, name: "entraa in prblm enti?", url: "/memes/entraa ni prblm.jpeg" },
+    { id: 13, name: "good morning", url: "/memes/gud mrng.jpeg" },
+    { id: 14, name: "khopdi tord sale ka", url: "/memes/kopdi todh sale ki.jpeg" },
+    { id: 15, name: "abhi maza ayenga na biddu", url: "/memes/abhi maaza ayenga na biddu.jpeg" },
+    { id: 16, name: "neelo edi asal expect cheyale bro", url: "/memes/neelo edi asal expect cheyale bro.jpeg" },
+    { id: 17, name: "jai sri ram", url: "/memes/drlin.jpeg" }
+
+  ]);
+
+  const [newMeme, setNewMeme] = useState({ name: "", url: "" });
+
+  const filteredMemes = memes.filter((meme) =>
+    meme.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const addMeme = (e) => {
+    e.preventDefault();
+    if (!newMeme.name || !newMeme.url) return;
+
+    const memeToAdd = {
+      id: memes.length + 1,
+      name: newMeme.name,
+      url: newMeme.url
+    };
+
+    setMemes([...memes, memeToAdd]);
+    setNewMeme({ name: "", url: "" });
+  };
+
+  const downloadMeme = (url, name) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = name + ".jpg";
+    link.click();
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>MemeMash</h1>
+
+      <input
+        type="text"
+        placeholder="Search memes..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+      <form onSubmit={addMeme}>
+        <input
+          type="text"
+          placeholder="Meme Name"
+          value={newMeme.name}
+          onChange={(e) =>
+            setNewMeme({ ...newMeme, name: e.target.value })
+          }
+        />
+
+        <input
+          type="text"
+          placeholder="Image URL or /memes/image.jpg"
+          value={newMeme.url}
+          onChange={(e) =>
+            setNewMeme({ ...newMeme, url: e.target.value })
+          }
+        />
+
+        <button type="submit">Add Meme</button>
+      </form>
+
+      <div className="memes">
+        {filteredMemes.map((meme) => (
+          <div key={meme.id} className="card">
+            <img src={meme.url} alt={meme.name} />
+            <p>{meme.name}</p>
+            <button onClick={() => downloadMeme(meme.url, meme.name)}>
+              Download
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
